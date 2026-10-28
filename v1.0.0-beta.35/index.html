@@ -1,0 +1,53 @@
+<!doctype html>
+<!-- Plain-HTML usage of the bSide design system: load bside-ds.css and bside-ds.js, then mount components. -->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>bSide Design System · HTML</title>
+  <link rel="stylesheet" href="./bside-ds.css">
+  <script src="./bside-ds.js"></script>
+  <style>
+    body { margin: 0; padding: 32px; display: grid; gap: 24px; max-width: 720px; }
+  </style>
+</head>
+<body>
+  <div id="sin-jsx"></div>
+  <div id="con-jsx"></div>
+
+  <!-- Without a build step: React.createElement through `h`. Each script is a
+       block so its consts stay local: classic scripts share one global scope. -->
+  <script>
+  {
+    const { render, Card, Button, Badge } = BSideDesignSystem;
+    const h = React.createElement;
+
+    render(
+      h(Card, { title: 'Sin JSX', description: 'React.createElement, sin dependencias extra' },
+        h(Badge, { variant: 'jira' }, 'ASIGN-25'), ' ',
+        h(Button, { onClick: () => console.log('click') }, 'Guardar')),
+      '#sin-jsx',
+    );
+  }
+  </script>
+
+  <!-- With JSX: Babel standalone compiles <script type="text/babel"> in the browser. -->
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+  <script type="text/babel" data-presets="react">
+  {
+    const { render, Card, Button } = BSideDesignSystem;
+
+    function Contador() {
+      const [n, setN] = React.useState(0);
+      return (
+        <Card title="Con JSX" description="Babel standalone en el navegador">
+          <Button variant="secondary" onClick={() => setN(n + 1)}>Clics: {n}</Button>
+        </Card>
+      );
+    }
+
+    render(<Contador />, '#con-jsx');
+  }
+  </script>
+</body>
+</html>
